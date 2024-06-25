@@ -112,7 +112,7 @@ Here's how the following queries would match that text:
 | `+dog -cat`    | Yes    | The text contains 'dog' but not 'cat'                         |
 | `-cat`         | No     | The minus operator cannot be used on its own (see note below) |
 | `fox dog`      | Yes    | The text contains 'fox' or 'dog'                              |
-| `quic\*`       | Yes    | The text contains a word starting with 'quic'                 |
+| `quic*`        | Yes    | The text contains a word starting with 'quic'                 |
 | `quick fox @2` | Yes    | 'fox' starts within a 2 word distance of 'quick'              |
 | `fox dog @2`   | No     | 'dog' does not start within a 2 word distance of 'fox'        |
 | `"jumps over"` | Yes    | The text contains the whole phrase 'jumps over'               |
