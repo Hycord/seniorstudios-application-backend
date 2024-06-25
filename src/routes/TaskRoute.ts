@@ -10,8 +10,8 @@ import AuthMiddleware from "~middleware/AuthMiddleware";
 
 const router = Router();
 
-router.get("/", GetTasks);
-router.get("/:id", GetTask);
+router.get("/", AuthMiddleware, GetTasks);
+router.get("/:id", AuthMiddleware, GetTask);
 router.post("/", AuthMiddleware, CreateTask);
 router.put("/:id", AuthMiddleware, UpdateTask);
 router.delete("/:id", AuthMiddleware, DeleteTask);
