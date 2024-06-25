@@ -1,0 +1,447 @@
+openapi: 3.0.0
+info:
+  title: Authentication API
+  version: 1.0.0
+
+tags:
+  - name: Auth
+    description: API related to managing user authentication
+  - name: User
+    description: API related to fetching public user info
+  - name: Task
+    description: API related to managing task data
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Value: Bearer {jwt}"
+  schemas:
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        id:
+          type: string
+          description: The auto-generated ID of the user
+        username:
+          type: string
+          description: The user's custom username
+        email:
+          type: string
+          description: The user's custom email
+        password:
+          type: string
+          description: The user's hashed password
+        createdAt:
+          type: string
+          format: date-time
+          description: The date the user was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date the user was last updated
+        validTokens:
+          type: array
+          items:
+            type: string
+      example:
+        id: clxtqpncw00002v6nie5mndnc
+        username: hycord
+        email: admin@masen.dev
+        password: $2b$10$OjtPStGSdc40gz8JD5E/Gen7qUsYlPFWxxAYg4l70tTEyr5Q7XMgi
+        validTokens: ["clxtxjuku00025va23fzdrcu3"]
+        createdAt: 2024-06-24T04:05:06.157Z
+        updatedAt: 2024-06-24T04:05:06.157Z
+    Task:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        id:
+          type: string
+          description: The auto-generated ID of the task
+        title:
+          type: string
+          description: Title of the task
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+          description: Status of the task
+        description:
+          type: string
+          description: Description of the task
+        createdAt:
+          type: string
+          format: date-time
+          description: The date the task was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date the task was last updated
+        userId:
+          type: string
+          description: The ID of the user to whom this task is assigned
+      example:
+        id: clxtqpncw00002v6nie5mndnc
+        title: Example Title
+        status: IN_PROGRESS
+        description: Example Description
+        createdAt: 2024-06-24T04:05:06.157Z
+        updatedAt: 2024-06-24T04:05:06.157Z
+        userId: clxtqpnew00002v6nie5mndnc
+
+paths:
+  /auth/register:
+    post:
+      summary: Create a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, email, password]
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              example:
+                username: hycord
+                email: admin@masen.dev
+                password: Pa$$W0R3
+      responses:
+        201:
+          description: User created successfully
+        400:
+          description: Malformed data
+          content:
+            application/json:
+              schema:
+                type: string
+                description: How data was malformed
+        409:
+          description: User already exists
+        500:
+          description: Server error
+
+  /auth/login:
+    post:
+      summary: Authenticate with a username and password
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              example:
+                username: hycord
+                password: Pa$$W0R3
+      responses:
+        200:
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT for the user
+        400:
+          description: Malformed data
+        401:
+          description: Invalid Credentials
+        500:
+          description: Server error
+
+  /auth/logout:
+    post:
+      summary: Invalidate a bearer token
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        202:
+          description: Token revoked successfully
+        401:
+          description: Invalid auth header
+        500:
+          description: Server error
+
+  /auth/me:
+    get:
+      summary: Get current user data
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        401:
+          description: Invalid auth header
+        500:
+          description: Server error
+
+  /users:
+    get:
+      summary: Get a list of all users
+      tags: [User]
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: false
+          description: Username of the user
+      responses:
+        200:
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        500:
+          description: Server error
+
+  /users/{id}/tasks:
+    get:
+      summary: Get tasks for a specific user
+      tags: [User]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the user to get tasks for
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [PENDING, IN_PROGRESS, COMPLETED]
+          required: false
+          description: Status of the task
+        - in: query
+          name: title
+          schema:
+            type: string
+          required: false
+          description: Title of the task
+        - in: query
+          name: description
+          schema:
+            type: string
+          required: false
+          description: Description of the task
+      responses:
+        200:
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        400:
+          description: Invalid user ID
+        500:
+          description: Server error
+
+  /tasks:
+    get:
+      summary: Get a list of all tasks
+      tags: [Task]
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [PENDING, IN_PROGRESS, COMPLETED]
+          required: false
+          description: Status of the task
+        - in: query
+          name: title
+          schema:
+            type: string
+          required: false
+          description: Title of the task
+        - in: query
+          name: description
+          schema:
+            type: string
+          required: false
+          description: Description of the task
+      responses:
+        200:
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+        500:
+          description: Server error
+    post:
+      summary: Create a new task
+      tags: [Task]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, description]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [PENDING, IN_PROGRESS, COMPLETED]
+              example:
+                title: Go to the store
+                description: Get eggs, milk, butter, pancake mix, and coffee
+      responses:
+        201:
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        400:
+          description: Malformed data
+          content:
+            application/json:
+              schema:
+                type: string
+                description: How data was malformed
+        401:
+          description: Invalid auth header
+        500:
+          description: Server error
+
+  /tasks/{id}:
+    get:
+      summary: Get details of a specific task
+      tags: [Task]
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the task to query
+      responses:
+        200:
+          description: Task data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        404:
+          description: Unknown task ID
+        500:
+          description: Server error
+    put:
+      summary: Update a specific task
+      tags: [Task]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the task to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                status:
+                  type: string
+                  enum: [PENDING, IN_PROGRESS, COMPLETED]
+              example:
+                title: Go to the store
+                description: Get eggs, milk, butter, pancake mix, and coffee
+                status: IN_PROGRESS
+      responses:
+        200:
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        400:
+          description: Malformed data
+          content:
+            application/json:
+              schema:
+                type: string
+                description: How data was malformed
+        401:
+          description: Invalid auth header
+        403:
+          description: Not authorized to access this material
+        404:
+          description: Unknown task ID
+        500:
+          description: Server error
+    delete:
+      summary: Delete a task
+      tags: [Task]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: ID of the task to delete
+      responses:
+        200:
+          description: Task deleted successfully
+        401:
+          description: Invalid auth header
+        403:
+          description: Not authorized to access this material
+        404:
+          description: Unknown task ID
+        500:
+          description: Server error

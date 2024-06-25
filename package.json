@@ -1,12 +1,15 @@
 {
-  "name": "example-github-actions-typescript-docker",
+  "name": "premierstudios-application-backend",
   "version": "1.0.0",
-  "description": "Example of a GitHub Actions workflow to build a TypeScript project and create a Docker image.",
+  "description": "Backend application built as an application for Premier Studios",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc -b",
+    "build": "tsc -b && tsc-alias",
     "start": "node dist/index.js",
-    "dev": "nodemon ./src/index.ts"
+    "prod": "npm run init && npm start",
+    "dev": "nodemon ./src/index.ts",
+    "init": "prisma db push --accept-data-loss",
+    "docker": "npx prisma generate --schema=/usr/app/prisma/schema.prisma"
   },
   "repository": {
     "type": "git",
@@ -19,11 +22,32 @@
   },
   "homepage": "https://github.com/hycord/egatd#readme",
   "dependencies": {
-    "typescript": "^5.0.4"
+    "@prisma/client": "^5.15.1",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/module-alias": "^2.0.4",
+    "@types/morgan": "^1.9.9",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.6",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
+    "discord.js": "^14.15.3",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
+    "morgan": "^1.10.0",
+    "prisma": "^5.15.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.5.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "nodemon": "^2.0.22",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0"
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2"
   }
 }

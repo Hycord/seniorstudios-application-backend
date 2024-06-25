@@ -1,0 +1,58 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  username String @unique
+  email    String @unique
+  password String @unique // Must be made unique so prisma will allow us to search with it.
+
+  validTokens ValidToken[]
+
+  tasks Task[]
+
+  @@fulltext([username])
+}
+
+model ValidToken {
+  jwtid String @id @default(cuid())
+
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  @@unique([userId, jwtid])
+}
+
+enum Status {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String @db.VarChar(100)
+  description String @db.VarChar(100)
+  status      Status @default(PENDING)
+
+  User   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@index([id], map: "id")
+  @@fulltext([title, description])
+  @@fulltext([title])
+  @@fulltext([description])
+}
