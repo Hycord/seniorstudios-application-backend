@@ -5,7 +5,7 @@
 ## Tech Stack
 
 - Language - Typescript
-- Database - MySQL
+- Database - MariaDB
 - Database ORM - Prisma
 - Development/Deployment - Docker
 - Version Control - Git via [Github](https://github.com/hycord/premierstudios-application-backend)
@@ -66,15 +66,17 @@ To run the project locally, you will need to do the following:
 - Have the LTS Node.js version available
 - Have docker available (if using)
 
-1. Create a MySQL server that you have access to. Doesn't matter where or how just make sure you can push to a specified db
-2. Copy .env.prod -> .env and fill in the values as needed (Please replace the JWT secret!)
+1. Create a MariaDB server that you have access to. Doesn't matter where or how just make sure you can push to a specified db
+2. Copy .env.example -> .env and fill in the values as needed (Please replace the JWT secret!)
 3. run `npm install`
 4. run `npm run init`
 5. run `npm run dev` and you will see messages in the console instructing you as to the port you have selected. (Go [here](https://localhost:3000/api-docs) to view API docs once the project is running locally)
 
 ### Docker Deployment
 
-To deploy the project locally with docker you will still need to follow steps 1-2 of "Local Development" however you should just be able to type "docker build . -t backend" to build the project and "docker run backed" to run it once you've configured your database settings appropriately
+To deploy the project locally with docker you will still need to follow steps 1-2 of "Local Development" however you should just be able to type "docker build . -t backend" to build the project and "docker run backed" to run it once you've configured your database settings appropriately.
+
+You can also use "docker compose up" to start both redis and mariadb locally then "npm run build && npm run start" or "npm run dev" after configuring environment variables
 
 ## API Documentation
 
@@ -128,3 +130,20 @@ Here's how the following queries would match that text:
 | ----------------- | ------------------------ | ------------------------------------------------------------------------------------------------------- |
 | `fox ~cat`        | Return 1. first, then 2. | Return all records containing 'fox', but rank records containing 'cat' lower                            |
 | `fox (<cat >dog)` | Return 1. first, then 2. | Return all records containing 'fox', but rank records containing 'cat' lower than rows containing 'dog' |
+
+### Rate Limiting
+
+All routes have a rate limit of 30 requests/60 seconds; Redis handles all rate limits.
+
+The keys for rate limits are as follows:
+
+`rate-limit::{channel}::{client IP}`
+
+the global rate limit falls under the "global" channel and is the first middleware that is applied.
+
+The helper "CreateRateLimit" can be used to apply other rate-limit channels as middleware.
+
+You just call app.use(CreateRateLimit(channel: string, rate: number, ttl: number)) to implement a rate limit.
+
+> Note: To show the extensibility of this system, the `POST /auth/login` route has a rate limit of 1 request per 600 seconds (10 minutes).
+> There is no functional reason for this, just to show the ease at which this can be implemented

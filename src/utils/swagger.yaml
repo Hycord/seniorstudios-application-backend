@@ -132,6 +132,16 @@ paths:
                 description: How data was malformed
         409:
           description: User already exists
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -169,6 +179,16 @@ paths:
           description: Malformed data
         401:
           description: Unauthorized
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -183,6 +203,16 @@ paths:
           description: Token revoked successfully
         401:
           description: Unauthorized
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -201,6 +231,16 @@ paths:
                 $ref: "#/components/schemas/User"
         401:
           description: Unauthorized
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -228,6 +268,16 @@ paths:
                   $ref: "#/components/schemas/User"
         401:
           description: Unauthorized
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -277,6 +327,16 @@ paths:
           description: Unauthorized
         400:
           description: Invalid user ID
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -317,6 +377,16 @@ paths:
                   $ref: "#/components/schemas/Task"
         401:
           description: Unauthorized
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
     post:
@@ -358,6 +428,16 @@ paths:
                 description: How data was malformed
         401:
           description: Unauthorized
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
 
@@ -385,6 +465,16 @@ paths:
           description: Unauthorized
         404:
           description: Unknown task ID
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
     put:
@@ -437,6 +527,16 @@ paths:
           description: Not authorized to access this material
         404:
           description: Unknown task ID
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error
     delete:
@@ -460,5 +560,15 @@ paths:
           description: Not authorized to access this material
         404:
           description: Unknown task ID
+        429:
+          description: Rate limit reached
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  retry:
+                    type: number
+                    description: Number of seconds to wait before re-trying. -1 means your client identity is invalid.
         500:
           description: Server error

@@ -7,4 +7,5 @@ export default z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   DATABASE_URL: z.string().trim().min(1),
+  REDIS_URL: z.string().trim().min(1),
 });
