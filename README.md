@@ -76,7 +76,7 @@ To run the project locally, you will need to do the following:
 
 To deploy the project locally with docker you will still need to follow steps 1-2 of "Local Development" however you should just be able to type "docker build . -t backend" to build the project and "docker run backed" to run it once you've configured your database settings appropriately.
 
-You can also use "docker compose up" to start both redis and mariadb locally then "npm run build && npm run start" or "npm run dev" after configuring environment variables
+You can also use "docker compose up" to start both redis and mariadb locally then "npm run build && npm run start" or "npm run dev" after configuring environment variables-
 
 ## API Documentation
 

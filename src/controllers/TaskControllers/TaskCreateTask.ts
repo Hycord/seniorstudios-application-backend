@@ -30,5 +30,4 @@ export const CreateTask = async (req: Request, res: Response) => {
   } catch (e) {
     return res.status(500).send(); // Server Error
   }
-  return res.status(500).send(); // Server Error
 };

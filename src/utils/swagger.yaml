@@ -63,6 +63,7 @@ components:
       required:
         - title
         - description
+        - status
       properties:
         id:
           type: string
@@ -72,7 +73,6 @@ components:
           description: Title of the task
         status:
           type: string
-          enum: [PENDING, IN_PROGRESS, COMPLETED]
           description: Status of the task
         description:
           type: string
@@ -298,7 +298,6 @@ paths:
           name: status
           schema:
             type: string
-            enum: [PENDING, IN_PROGRESS, COMPLETED]
           required: false
           description: Status of the task
         - in: query
@@ -351,7 +350,6 @@ paths:
           name: status
           schema:
             type: string
-            enum: [PENDING, IN_PROGRESS, COMPLETED]
           required: false
           description: Status of the task
         - in: query
@@ -408,10 +406,10 @@ paths:
                   type: string
                 status:
                   type: string
-                  enum: [PENDING, IN_PROGRESS, COMPLETED]
               example:
                 title: Go to the store
                 description: Get eggs, milk, butter, pancake mix, and coffee
+                status: NOT_STARTED
       responses:
         201:
           description: Task created successfully
@@ -502,7 +500,6 @@ paths:
                   type: string
                 status:
                   type: string
-                  enum: [PENDING, IN_PROGRESS, COMPLETED]
               example:
                 title: Go to the store
                 description: Get eggs, milk, butter, pancake mix, and coffee
